@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Weather Forecast</title>
+	<style>
+		body {
+			margin: 0;
+			background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			color: #333;
+		}
+		.weather-container {
+			background: linear-gradient(to bottom, #1e1e2f, #2c2c3e);
+			color: #d1c4e9;
+			padding: 25px;
+			border-radius: 15px;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+			text-align: center;
+			max-width: 400px;
+			width: 90%;
+		}
+		input[type="text"] {
+			padding: 10px;
+			border: none;
+			border-radius: 8px;
+			width: 80%;
+			margin-bottom: 20px;
+		}
+		button {
+      		background: linear-gradient(to right, #2193b0, #6dd5ed);
+  			color: white;
+  			border: none;
+  			padding: 10px 15px;
+  			border-radius: 10px;
+  			font-weight: bold;
+  			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  			transition: 0.5s;
+  			cursor: pointer;
+    	}
+		button:hover {
+  			background: linear-gradient(to right, #6dd5ed, #2193b0);
+  			transform: scale(1.05);
+		}
+		.result {
+      		margin-top: 20px;
+    	}
+		.result h2 {
+      		margin-bottom: 10px;
+    	}
+	</style>
+</head>
+<body>
+	<div class="weather-container">
+		<h1>🌤 Weather Forecast</h1>
+		<input type="text" id="cityInput" placeholder="Enter city name" />
+		<button onclick="getWeather()">Check Weather</button>
+		<div class="result" id="weatherResult"></div>
+	</div>
+
+	<script>
+		async function getWeather() {
+
+			const city = document.getElementById("cityInput").value;
+			if (!city) {
+				resultDiv.innerHTML = "<p>Please enter a city name.</p>";
+				return;
+			}
+			const resultDiv = document.getElementById("weatherResult");
+
+			
+			const obj = await fetch(`http://api.weatherapi.com/v1/current.json?key=xxxxxxxxxxxxxxxxxxxxxxxxxx&q=${city} &aqi=yes`);
+
+			try {
+				const data = await obj.json();
+				resultDiv.innerHTML = `
+					<h2>${data.location.name}, ${data.location.country}</h2>
+					<p>🌡 Temperature: ${data.current.temp_c}°C</p>
+					<p>💧 Humidity: ${data.current.humidity}%</p>
+					<p>🌥 Condition: ${data.current.precip_mm}</p>
+					<p>🌥 Air Quality: ${data.current.air_quality.pm2_5}</p>
+				`;
+			} 
+			catch (error) {
+				resultDiv.innerHTML = `<p>⚠ Error fetching data</p>`;
+			}
+		}
+  	</script>
+</body>
+</html>
